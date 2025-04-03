@@ -11,7 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class BirthdaysRepository {
-    private val baseUrl = "https://birthdaysrest.azurewebsites.net/api/persons"
+    private val baseUrl = "https://birthdaysrest.azurewebsites.net/api/persons/"
     private val birthdaysService: BirthdaysService
 
     // State to hold the current list of birthdays
@@ -125,6 +125,4 @@ class BirthdaysRepository {
 
     // TODO: Sorting and filtering functions (Depends on the requirements)
     // TODO: Implement sorting and filtering functions
-
-
 }

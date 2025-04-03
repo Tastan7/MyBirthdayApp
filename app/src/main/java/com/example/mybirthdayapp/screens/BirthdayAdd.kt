@@ -13,9 +13,9 @@ import com.example.mybirthdayapp.model.Birthday
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BirthdayAdd(
+fun BirthdayAddScreen(
     onAddBirthday: (Birthday) -> Unit,
-    onCancel: () -> Unit
+    onNavigateBack: () -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
@@ -66,14 +66,14 @@ fun BirthdayAdd(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Button(onClick = onCancel) {
+            Button(onClick = onNavigateBack) {
                 Text("Cancel")
             }
             Button(onClick = {
                 if (validateInputs()) {
                     val birthday = Birthday(
                         id = 0,
-                        userId = "user",
+                        userId = "userEman",
                         name = name,
                         birthYear = year.toInt(),
                         birthMonth = month.toInt(),
@@ -114,8 +114,8 @@ fun BirthdayEditableField(
 @Preview
 @Composable
 fun BirthdayAddPreview() {
-    BirthdayAdd(
+    BirthdayAddScreen(
         onAddBirthday = {},
-        onCancel = {}
+        onNavigateBack = {}
     )
 }

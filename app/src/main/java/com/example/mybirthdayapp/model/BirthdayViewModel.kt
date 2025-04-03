@@ -1,11 +1,13 @@
 package com.example.mybirthdayapp.model
 
+import android.util.Log
 import androidx.compose.runtime.State
+import androidx.lifecycle.ViewModel
 import com.example.mybirthdayapp.repository.BirthdaysRepository
 
-class BirthdayViewModel {
+class BirthdayViewModel : ViewModel() {
 
-    private  val repository = BirthdaysRepository()
+    private val repository = BirthdaysRepository()
 
     // Expose repository data as State to be observed in the UI
     val birthdays: State<List<Birthday>> = repository.birthdays
@@ -31,12 +33,12 @@ class BirthdayViewModel {
         repository.updateBirthday(birthdayId, birthday)
     }
 
-    //TODO: Make sure the code below is correct for later use
+       // Delete a birthday via the repository
+    fun deleteBirthday(birthdayId: Int) {
+        repository.deleteBirthday(birthdayId)
+    }
 
-//    // Remove a birthday via the repository
-//    fun removeBirthday(birthdayId: Int) {
-//        repository.deleteBirthday(birthdayId)
-//    }
+    //TODO: Make sure the code below is correct for later use
 //
 //    // Sorting methods
 //    fun sortBirthdaysByName(ascending: Boolean) {
