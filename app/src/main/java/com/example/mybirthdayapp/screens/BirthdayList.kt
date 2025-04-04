@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.mybirthdayapp.model.Birthday
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -137,23 +138,45 @@ fun BirthdayListScreen(
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Button(onClick = {
-                    sortByName(isNameAscending) // Trigger sorting by name
-                    isNameAscending = !isNameAscending // Toggle sorting order
-                }) {
-                    Text(if (isNameAscending) "Sort Name \u2191" else "Sort Name \u2193")
+                Button(
+                    onClick = {
+                        sortByName(isNameAscending) // Trigger sorting by name
+                        isNameAscending = !isNameAscending // Toggle sorting order
+                },
+                    modifier = Modifier.weight(1f)
+
+                ) {
+                    Text(
+                        text = if (isNameAscending) "Name \u25B2" else "Name \u25BC",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
+                    )
                 }
-                Button(onClick = {
-                    sortByBirthYear(isBirthYearAscending) // Trigger sorting by birth year
-                    isBirthYearAscending = !isBirthYearAscending // Toggle sorting order
-                }) {
-                    Text(if (isBirthYearAscending) "Sort Birth Year \u2191" else "Sort Birth Year \u2193")
+                Button(
+                    onClick = {
+                        sortByBirthYear(isBirthYearAscending) // Trigger sorting by birth year
+                        isBirthYearAscending = !isBirthYearAscending // Toggle sorting order
+                },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = if (isBirthYearAscending) "Year \u25B2" else "Year \u25BC",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
+
+                    )
+
                 }
-                Button(onClick = {
-                    sortByBirthMonth(isBirthMonthAscending) // Trigger sorting by birth month
-                    isBirthMonthAscending = !isBirthMonthAscending // Toggle sorting order
-                }) {
-                    Text(if (isBirthMonthAscending) "Sort Birth Month \u2191" else "Sort Birth Month \u2193")
+                Button(
+                    onClick = {
+                        sortByBirthMonth(isBirthMonthAscending) // Trigger sorting by birth month
+                        isBirthMonthAscending = !isBirthMonthAscending // Toggle sorting order
+                },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text= if (isBirthMonthAscending) "Month \u25B2" else "Month \u25BC",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
+
+                    )
                 }
             }
 
