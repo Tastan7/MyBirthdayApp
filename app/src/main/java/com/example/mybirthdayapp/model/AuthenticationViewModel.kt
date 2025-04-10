@@ -1,8 +1,9 @@
+
 package com.example.mybirthdayapp.model
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
-import com.example.beercollection.repository.AuthenticationRepository
+import com.example.mybirthdayapp.repository.AuthenticationRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -49,3 +50,7 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository) 
         user = null
     }
 }
+
+
+
+
