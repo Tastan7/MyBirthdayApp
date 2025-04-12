@@ -27,7 +27,7 @@ fun BirthdayListScreen(
     signOut: () -> Unit = {},
     sortByName: (Boolean) -> Unit = {},
     sortByBirthYear: (Boolean) -> Unit = {},
-    sortByBirthMonth: (Boolean) -> Unit = {},
+    sortByAge: (Boolean) -> Unit = {},
     filterByName: (String) -> Unit = {},
     filterByBirthYear: (Int) -> Unit = {},
     filterByBirthMonth: (Int) -> Unit = {},
@@ -37,7 +37,7 @@ fun BirthdayListScreen(
     var filterType by remember { mutableStateOf("Name") }
     var isNameAscending by remember { mutableStateOf(true) }
     var isBirthYearAscending by remember { mutableStateOf(true) }
-    var isBirthMonthAscending by remember { mutableStateOf(true) }
+    var isAgeAscending by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf("") }
     var showLogoutDialog by remember { mutableStateOf(false) } // State for logout confirmation dialog
 
@@ -138,44 +138,45 @@ fun BirthdayListScreen(
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                // Sort by Name
                 Button(
                     onClick = {
                         sortByName(isNameAscending) // Trigger sorting by name
                         isNameAscending = !isNameAscending // Toggle sorting order
-                },
+                    },
                     modifier = Modifier.weight(1f)
-
                 ) {
                     Text(
                         text = if (isNameAscending) "Name \u25B2" else "Name \u25BC",
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
                     )
                 }
+
+                // Sort by Age
+                Button(
+                    onClick = {
+                        sortByAge(isAgeAscending) // Trigger sorting by age
+                        isAgeAscending = !isAgeAscending // Toggle sorting order
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = if (isAgeAscending) "Age \u25B2" else "Age \u25BC",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
+                    )
+                }
+
+                // Sort by Year
                 Button(
                     onClick = {
                         sortByBirthYear(isBirthYearAscending) // Trigger sorting by birth year
                         isBirthYearAscending = !isBirthYearAscending // Toggle sorting order
-                },
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
                         text = if (isBirthYearAscending) "Year \u25B2" else "Year \u25BC",
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
-
-                    )
-
-                }
-                Button(
-                    onClick = {
-                        sortByBirthMonth(isBirthMonthAscending) // Trigger sorting by birth month
-                        isBirthMonthAscending = !isBirthMonthAscending // Toggle sorting order
-                },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text= if (isBirthMonthAscending) "Month \u25B2" else "Month \u25BC",
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
-
                     )
                 }
             }

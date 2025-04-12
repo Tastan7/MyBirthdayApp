@@ -38,37 +38,18 @@ class BirthdayViewModel : ViewModel() {
         repository.deleteBirthday(birthdayId)
     }
 
-    //TODO: Make sure the code below is correct for later use
-//
-//    // Sorting methods
-//    fun sortBirthdaysByName(ascending: Boolean) {
-//        repository.sortBirthdaysByName(ascending)
-//    }
-//
-//    fun sortBirthdaysByBirthYear(ascending: Boolean) {
-//        repository.sortBirthdaysByBirthYear(ascending)
-//    }
-//
-//    fun sortBirthdaysByBirthMonth(ascending: Boolean) {
-//        repository.sortBirthdaysByBirthMonth(ascending)
-//    }
-//
-//    // Filtering methods
-//
-//    fun filterBirthdaysByName(nameFragment: String) {
-//        repository.filterBirthdaysByName(nameFragment)
-//    }
-//
-//    fun filterBirthdaysByBirthYear(birthYear: Int) {
-//        repository.filterBirthdaysByBirthYear(birthYear)
-//    }
-//
-//    fun filterBirthdaysByBirthMonth(birthMonth: Int) {
-//        repository.filterBirthdaysByBirthMonth(birthMonth)
-//    }
-//
-//    fun filterBirthdaysByAge(minAge: Int) {
-//        repository.filterBirthdaysByAge(minAge)
-//    }
+    // Sorting by name
+    fun sortBirthdaysByName(ascending: Boolean) {
+        repository.sortBirthdaysByName(ascending)
+    }
 
+    // Sorting by birth year
+    fun sortBirthdaysByBirthYear(ascending: Boolean) {
+        repository.sortBirthdaysByBirthYear(ascending)
+    }
+
+    // Sorting by age
+    fun sortBirthdaysByAge(ascending: Boolean) {
+        repository.sortBirthdaysByAge(ascending)
+    }
 }

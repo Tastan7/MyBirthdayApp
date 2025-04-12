@@ -67,7 +67,10 @@ fun MainScreen() {
                     navController.navigate(NavRoutes.Authentication.route) {
                         popUpTo(NavRoutes.BirthdayList.route) { inclusive = true }
                     }
-                }
+                },
+                sortByName = { ascending -> birthdayViewModel.sortBirthdaysByName(ascending) }, // Pass sortByName
+                sortByBirthYear = { ascending -> birthdayViewModel.sortBirthdaysByBirthYear(ascending) }, // Pass sortByBirthYear
+                sortByAge = { ascending -> birthdayViewModel.sortBirthdaysByAge(ascending) } // Pass sortByAge
             )
         }
 

@@ -123,6 +123,30 @@ class BirthdaysRepository {
         })
     }
 
-    // TODO: Sorting and filtering functions (Depends on the requirements)
-    // TODO: Implement sorting and filtering functions
+    // Sorting by name
+    fun sortBirthdaysByName(ascending: Boolean) {
+        birthdays.value = if (ascending) {
+            birthdays.value.sortedBy { it.name }
+        } else {
+            birthdays.value.sortedByDescending { it.name }
+        }
+    }
+
+    // Sorting by birth year
+    fun sortBirthdaysByBirthYear(ascending: Boolean) {
+        birthdays.value = if (ascending) {
+            birthdays.value.sortedBy { it.birthYear }
+        } else {
+            birthdays.value.sortedByDescending { it.birthYear }
+        }
+    }
+
+    // Sorting by age
+    fun sortBirthdaysByAge(ascending: Boolean) {
+        birthdays.value = if (ascending) {
+            birthdays.value.sortedBy { it.age }
+        } else {
+            birthdays.value.sortedByDescending { it.age }
+        }
+    }
 }
