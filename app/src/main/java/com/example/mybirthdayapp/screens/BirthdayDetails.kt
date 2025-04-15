@@ -92,7 +92,7 @@ fun BirthdayDetailsScreen(
         ) {
             // Display the image using AsyncImage
             AsyncImage(
-                model = birthday.pictureUrl,
+                model = birthday.pictureUrl ?: "",
                 contentDescription = "Birthday Picture",
                 modifier = Modifier
                     .size(150.dp)

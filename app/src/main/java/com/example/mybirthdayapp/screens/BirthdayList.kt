@@ -7,9 +7,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Brightness4
+import androidx.compose.material.icons.filled.Brightness7
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
@@ -17,10 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mybirthdayapp.model.Birthday
+import com.example.mybirthdayapp.model.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BirthdayListScreen(
+    themeViewModel: ThemeViewModel,
     birthdays: List<Birthday> = listOf(),
     onBirthdaySelected: (Birthday) -> Unit = {},
     onBirthdayDeleted: (Birthday) -> Unit = {},
@@ -29,8 +34,7 @@ fun BirthdayListScreen(
     sortByBirthYear: (Boolean) -> Unit = {},
     sortByAge: (Boolean) -> Unit = {},
     filterByName: (String) -> Unit = {},
-    filterByBirthYear: (Int) -> Unit = {},
-    filterByBirthMonth: (Int) -> Unit = {},
+    filterByAge: (Int) -> Unit = {},
     onAddBirthdayClicked: () -> Unit = {}
 ) {
     var filterText by remember { mutableStateOf("") }
@@ -46,7 +50,17 @@ fun BirthdayListScreen(
             TopAppBar(
                 title = { Text("Birthday List") },
                 actions = {
-                    IconButton(onClick = { showLogoutDialog = true }) { // Show logout dialog on click
+                    IconButton(onClick = { themeViewModel.toggleTheme() }) {
+                        Icon(
+                            imageVector = if (themeViewModel.isDarkMode.value) {
+                                Icons.Default.Brightness7 // Sun icon for light mode
+                            } else {
+                                Icons.Default.Brightness4 // Moon icon for dark mode
+                            },
+                            contentDescription = "Toggle Theme"
+                        )
+                    }
+                    IconButton(onClick = { showLogoutDialog = true }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
                     }
                 },
@@ -58,15 +72,14 @@ fun BirthdayListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onAddBirthdayClicked,
-                modifier = Modifier.padding(16.dp)
             ) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Birthday")
             }
-        }
+        },
+        floatingActionButtonPosition = FabPosition.Center // center the FAB
+
     ) { innerPadding ->
-        Column(modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()) {
+        Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
 
             // Filter Row
             Row(
@@ -79,56 +92,47 @@ fun BirthdayListScreen(
                     value = filterText,
                     onValueChange = {
                         filterText = it
+                        errorMessage = "" // Clear error message on input change
                         if (filterText.isEmpty()) {
-                            filterByName("") // Reset name filter
-                            filterByBirthYear(0) // Reset birth year filter
-                            filterByBirthMonth(0) // Reset birth month filter
+                            // Reset to original list
+                            filterByName("")
                         } else if (filterType == "Name") {
-                            filterByName(filterText) // Apply name filter
-                        } else if (filterType == "Birth Year") {
-                            val birthYear = filterText.toIntOrNull()
-                            if (birthYear != null) {
-                                filterByBirthYear(birthYear) // Apply birth year filter
+                            filterByName(filterText) // Automatically filter by name
+                        } else if (filterType == "Age") {
+                            val age = filterText.toIntOrNull()
+                            if (age != null) {
+                                filterByAge(age) // Automatically filter by age
                             } else {
-                                filterByBirthYear(0) // Reset birth year filter if input is invalid
-                                errorMessage = "Please enter a valid number for Birth Year." // Set error message
-                            }
-                        } else if (filterType == "Birth Month") {
-                            val birthMonth = filterText.toIntOrNull()
-                            if (birthMonth != null) {
-                                filterByBirthMonth(birthMonth) // Apply birth month filter
-                            } else {
-                                filterByBirthMonth(0) // Reset birth month filter if input is invalid
-                                errorMessage = "Please enter a valid number for Birth Month." // Set error message
+                                errorMessage = "Please enter a valid number for Age."
                             }
                         }
                     },
                     label = { Text("Filter by $filterType") },
-                    modifier = Modifier.weight(1f),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = if (filterType == "Name") KeyboardType.Text else KeyboardType.Number
-                    )
+                    ),
+                    modifier = Modifier.weight(1f)
                 )
 
                 Button(
                     onClick = {
-                        // Toggle filter type between Name, Birth Year, and Birth Month
-                        filterType = when (filterType) {
-                            "Name" -> "Birth Year"
-                            "Birth Year" -> "Birth Month"
-                            else -> "Name"
-                        }
+                        filterType = if (filterType == "Name") "Age" else "Name"
+                        filterText = "" // Clear filter text when switching
+                        errorMessage = "" // Clear error message
                     },
                     modifier = Modifier.padding(start = 8.dp)
                 ) {
-                    Text(filterType)
+                    Text("Switch to $filterType")
                 }
             }
 
             // Error Message Display
             if (errorMessage.isNotEmpty()) {
-                Text(errorMessage, color = MaterialTheme.colorScheme.error)
-                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(8.dp)
+                )
             }
 
             // Sorting Row
@@ -181,11 +185,8 @@ fun BirthdayListScreen(
                 }
             }
 
-            // List of Birthdays
-            LazyColumn(
-                contentPadding = innerPadding,
-                modifier = Modifier.fillMaxSize()
-            ) {
+            // Birthday List
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(birthdays) { birthday ->
                     BirthdayListItem(
                         birthday = birthday,
@@ -231,6 +232,29 @@ fun BirthdayListItem(
     onBirthdaySelected: (Birthday) -> Unit = {},
     onBirthdayDeleted: (Birthday) -> Unit = {}
 ) {
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("Delete Confirmation") },
+            text = { Text("Are you sure you want to delete this birthday?") },
+            confirmButton = {
+                Button(onClick = {
+                    onBirthdayDeleted(birthday)
+                    showDeleteConfirmation = false
+                }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteConfirmation = false }) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -245,25 +269,37 @@ fun BirthdayListItem(
         ) {
             Column {
                 Text(text = birthday.name, style = MaterialTheme.typography.titleMedium)
-                Text(text = "Birth Year: ${birthday.birthYear}") // Display birth year
-                Text(text = "Birth Month: ${birthday.birthMonth}") // Display birth month
+                Text(text = "Age: ${birthday.age}")
+                Text(text = "Year: ${birthday.birthYear}")
             }
-            IconButton(onClick = { onBirthdayDeleted(birthday) }) {
+            IconButton(
+                onClick = { showDeleteConfirmation = true },
+                modifier = Modifier
+                    .size(48.dp) // Increase the size of the icon
+                    .align(Alignment.CenterVertically) // Center the icon vertically
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
                     contentDescription = "Delete",
-                    tint = Color.Red
+                    tint = Color.Red,
+                    modifier = Modifier.size(40.dp) // Ensure the icon itself is resized
                 )
             }
         }
     }
 }
 
-// generate me a preview with 5 birthdays
-@Preview
+
+@Preview(showBackground = true)
 @Composable
-fun BirthdayListScreenPreview(){
+fun BirthdayListScreenPreview() {
+    // Create a mock ThemeViewModel
+    val mockThemeViewModel = ThemeViewModel().apply {
+        isDarkMode.value = false // Set a default value for the preview
+    }
+
     BirthdayListScreen(
+        themeViewModel = mockThemeViewModel,
         birthdays = listOf(
             Birthday(1, "1", "John Doe", 1990, 1, 1, "Remarks", "https://example.com/picture.jpg", 31),
             Birthday(2, "1", "Jane Doe", 1995, 2, 2, "Remarks", "https://example.com/picture.jpg", 26),

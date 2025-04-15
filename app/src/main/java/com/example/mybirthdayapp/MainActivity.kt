@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.mybirthdayapp.model.BirthdayViewModel
 import com.example.mybirthdayapp.model.AuthenticationViewModel
+import com.example.mybirthdayapp.model.ThemeViewModel
 import com.example.mybirthdayapp.repository.AuthenticationRepository
 import com.example.mybirthdayapp.screens.Authentication
 import com.example.mybirthdayapp.screens.BirthdayAddScreen
@@ -26,15 +27,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyBirthdayAppTheme {
-                MainScreen()
+            val themeViewModel: ThemeViewModel = viewModel() // Create ThemeViewModel
+
+            MyBirthdayAppTheme(darkTheme = themeViewModel.isDarkMode.value) {
+                MainScreen(themeViewModel)
             }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(themeViewModel: ThemeViewModel) {
     val navController = rememberNavController()
     val birthdayViewModel: BirthdayViewModel = viewModel()
     val authRepository = AuthenticationRepository() // Create repository instance
@@ -58,6 +61,7 @@ fun MainScreen() {
         // Birthday List screen
         composable(NavRoutes.BirthdayList.route) {
             BirthdayListScreen(
+                themeViewModel = themeViewModel,
                 birthdays = birthdayViewModel.birthdays.value,
                 onBirthdaySelected = { birthday -> navController.navigate(NavRoutes.BirthdayDetails.createRoute(birthday.id)) },
                 onBirthdayDeleted = { birthday -> birthdayViewModel.deleteBirthday(birthday.id) },
@@ -70,7 +74,9 @@ fun MainScreen() {
                 },
                 sortByName = { ascending -> birthdayViewModel.sortBirthdaysByName(ascending) }, // Pass sortByName
                 sortByBirthYear = { ascending -> birthdayViewModel.sortBirthdaysByBirthYear(ascending) }, // Pass sortByBirthYear
-                sortByAge = { ascending -> birthdayViewModel.sortBirthdaysByAge(ascending) } // Pass sortByAge
+                sortByAge = { ascending -> birthdayViewModel.sortBirthdaysByAge(ascending) }, // Pass sortByAge
+                filterByName = { name -> birthdayViewModel.filterBirthdays("Name", name) }, // Pass filterByName
+                filterByAge = { age -> birthdayViewModel.filterBirthdays("Age", age.toString()) } // Pass filterByAge
             )
         }
 
@@ -106,7 +112,10 @@ fun MainScreen() {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MyBirthdayAppTheme {
-        MainScreen()
+    val mockThemeViewModel = ThemeViewModel().apply {
+        isDarkMode.value = false // Set a default value for the preview
+    }
+    MyBirthdayAppTheme(darkTheme = mockThemeViewModel.isDarkMode.value) {
+        MainScreen(themeViewModel = mockThemeViewModel)
     }
 }

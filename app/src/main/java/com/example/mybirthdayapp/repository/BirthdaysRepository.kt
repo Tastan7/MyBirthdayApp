@@ -16,6 +16,7 @@ class BirthdaysRepository {
 
     // State to hold the current list of birthdays
     val birthdays: MutableState<List<Birthday>> = mutableStateOf(listOf())
+    private var originalBirthdays: List<Birthday> = listOf()
     val isLoadingBirthdays = mutableStateOf(false)
     val errorMessage = mutableStateOf("")
 
@@ -35,7 +36,8 @@ class BirthdaysRepository {
             override fun onResponse(call: Call<List<Birthday>>, response: Response<List<Birthday>>) {
                 isLoadingBirthdays.value = false
                 if (response.isSuccessful) {
-                    birthdays.value = response.body() ?: emptyList()
+                    originalBirthdays = response.body() ?: emptyList()
+                    birthdays.value = originalBirthdays // Set the birthdays state to the original list
                     errorMessage.value = ""
                     Log.d("BirthdaysRepository", "Fetched birthdays: ${birthdays.value}")
                 } else {
@@ -147,6 +149,19 @@ class BirthdaysRepository {
             birthdays.value.sortedBy { it.age }
         } else {
             birthdays.value.sortedByDescending { it.age }
+        }
+    }
+
+    // Filter birthdays by name or age
+    fun filterBirthdaysByNameOrAge(filterType: String, filterValue: String) {
+        birthdays.value = if (filterValue.isEmpty()) {
+            originalBirthdays // Reset to the original list
+        } else {
+            when (filterType) {
+                "Name" -> originalBirthdays.filter { it.name.startsWith(filterValue, ignoreCase = true) }
+                "Age" -> filterValue.toIntOrNull()?.let { age -> originalBirthdays.filter { it.age == age } } ?: emptyList()
+                else -> originalBirthdays
+            }
         }
     }
 }

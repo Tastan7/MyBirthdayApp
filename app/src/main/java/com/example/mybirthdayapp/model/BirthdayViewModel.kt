@@ -52,4 +52,9 @@ class BirthdayViewModel : ViewModel() {
     fun sortBirthdaysByAge(ascending: Boolean) {
         repository.sortBirthdaysByAge(ascending)
     }
+
+    // Filter birthdays by name or age
+    fun filterBirthdays(filterType: String, filterValue: String) {
+        repository.filterBirthdaysByNameOrAge(filterType, filterValue)
+    }
 }
