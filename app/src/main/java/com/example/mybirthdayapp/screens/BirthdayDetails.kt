@@ -17,7 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.mybirthdayapp.model.Birthday
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,41 +90,14 @@ fun BirthdayDetailsScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
+            // Display the image using AsyncImage
+            AsyncImage(
+                model = birthday.pictureUrl,
+                contentDescription = "Birthday Picture",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // Spot for the picture
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .padding(bottom = 16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = "Picture here", color = Color.Gray)
-                    }
-                }
-
-                // Edit button slightly below and to the right
-                IconButton(
-                    onClick = { isEditing = !isEditing },
-                    modifier = Modifier
-                        .offset(x = (100).dp, y = 50.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = "Edit",
-                        tint = Color.Blue
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
+                    .size(150.dp)
+                    .padding(bottom = 16.dp)
+            )
 
             if (showError) {
                 Text(
@@ -131,7 +106,7 @@ fun BirthdayDetailsScreen(
                     modifier = Modifier.padding(8.dp)
                 )
             }
-
+            // lave et map der kan binde en label til en værdi
             if (isEditing) {
                 DetailEditableField(value = name, onValueChange = { name = it }, label = "Name")
                 DetailEditableField(value = birthYear, onValueChange = { birthYear = it }, label = "Birth Year", keyboardType = KeyboardType.Number)
@@ -173,6 +148,8 @@ fun BirthdayDetailsScreen(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
+
+                // lave dette programatisk så det ikke bare er hardcoded
                 DetailRow(label = "Birth Year", value = birthYear)
                 HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
                 DetailRow(label = "Birth Month", value = birthMonth)
@@ -233,3 +210,4 @@ fun BirthdayDetailsPreview() {
         onBackPressed = {}
     )
 }
+

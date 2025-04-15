@@ -21,6 +21,8 @@ fun BirthdayAddScreen(
     var date by remember { mutableStateOf("") }
     var month by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
+    var pictureUrl by remember { mutableStateOf("") }
+    var remarks by remember { mutableStateOf("") }
 
     var showError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
@@ -59,6 +61,8 @@ fun BirthdayAddScreen(
         BirthdayEditableField(value = date, onValueChange = { date = it }, label = "Date", keyboardType = KeyboardType.Number)
         BirthdayEditableField(value = month, onValueChange = { month = it }, label = "Month", keyboardType = KeyboardType.Number)
         BirthdayEditableField(value = year, onValueChange = { year = it }, label = "Year", keyboardType = KeyboardType.Number)
+        BirthdayEditableField(value = pictureUrl, onValueChange = { pictureUrl = it }, label = "Picture URL")
+        BirthdayEditableField(value = remarks, onValueChange = { remarks = it }, label = "Remarks")
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -78,8 +82,8 @@ fun BirthdayAddScreen(
                         birthYear = year.toInt(),
                         birthMonth = month.toInt(),
                         birthDayOfMonth = date.toInt(),
-                        remarks = null,
-                        pictureUrl = null,
+                        remarks = remarks,
+                        pictureUrl = pictureUrl,
                         age = 0
                     )
                     onAddBirthday(birthday)
