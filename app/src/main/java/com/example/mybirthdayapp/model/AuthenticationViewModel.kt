@@ -26,7 +26,7 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository) 
                 _message.value = ""
             } else {
                 user = null
-                _message.value = error ?: "Unknown error"
+                _message.value = error ?: "Unknown error occurred"
             }
         }
     }
@@ -40,7 +40,7 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository) 
                 user = null // Keep the user null on registration
             } else {
                 user = null
-                _message.value = error ?: "Unknown error"
+                _message.value = error ?: "Unknown error occurred"
             }
         }
     }

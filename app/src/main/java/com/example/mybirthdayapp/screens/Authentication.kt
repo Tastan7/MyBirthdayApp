@@ -43,9 +43,10 @@ fun Authentication(
             )
         }
     ) { innerPadding ->
-        Column(modifier = Modifier
-            .padding(innerPadding)
-            .padding(16.dp)
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp)
         ) {
             // Email Input Field
             OutlinedTextField(
@@ -96,14 +97,24 @@ fun Authentication(
                 Text("Invalid password", color = MaterialTheme.colorScheme.error)
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
+
             // Show error message if provided
             if (errorMessage.isNotEmpty()) {
                 Text(errorMessage, color = MaterialTheme.colorScheme.error) // Show general error message
             }
 
-            // Show message from ViewModel if provided
+            // Show message from ViewModel
             if (message.isNotEmpty()) {
-                Text(message, color = MaterialTheme.colorScheme.primary) // Show message
+                val isError = message.contains("incorrect", ignoreCase = true) ||
+                        message.contains("malformed", ignoreCase = true) ||
+                        message.contains("expired", ignoreCase = true)
+
+                Text(
+                    text = message,
+                    color = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(8.dp)
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -118,9 +129,8 @@ fun Authentication(
                     passwordIsError = password.isEmpty()
 
                     if (emailIsError || passwordIsError) {
-                        errorMessage = "Please enter valid email and password." // Set error message if validation fails
+                        errorMessage = "Please enter a valid email and password." // Set error message if validation fails
                     } else {
-                        // Call register function
                         register(email.trim(), password.trim()) // Call register function
                     }
                 }) {
@@ -131,7 +141,7 @@ fun Authentication(
                     passwordIsError = password.isEmpty()
 
                     if (emailIsError || passwordIsError) {
-                        errorMessage = "Please enter valid email and password." // Set error message if validation fails
+                        errorMessage = "Please enter a valid email and password." // Set error message if validation fails
                     } else {
                         signIn(email.trim(), password.trim()) // Call sign-in function
                     }
