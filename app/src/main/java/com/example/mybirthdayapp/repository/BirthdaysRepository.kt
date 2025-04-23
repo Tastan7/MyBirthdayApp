@@ -107,12 +107,12 @@ class BirthdaysRepository {
 
     // Update an existing birthday by ID
     fun updateBirthday(id: Int, birthday: Birthday) {
-        Log.d("BirthdaysRepository", "Attempting to update birthday with ID: $id")
+        Log.d("BirthdaysRepository", "Updating birthday with ID: $id and PictureUrl: ${birthday.pictureUrl}")
         birthdaysService.updateBirthday(id, birthday).enqueue(object : Callback<Birthday> {
             override fun onResponse(call: Call<Birthday>, response: Response<Birthday>) {
                 if (response.isSuccessful) {
-                    getBirthdays()
-                    Log.d("BirthdaysRepository", "Updated birthday with ID: $id")
+                    Log.d("BirthdaysRepository", "Successfully updated birthday with ID: $id")
+                    getBirthdays() // Refresh the list to reflect the updated data
                 } else {
                     val message = "Error ${response.code()}: ${response.message()}"
                     errorMessage.value = message

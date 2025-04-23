@@ -63,7 +63,10 @@ fun MainScreen(themeViewModel: ThemeViewModel) {
             BirthdayListScreen(
                 themeViewModel = themeViewModel,
                 birthdays = birthdayViewModel.birthdays.value,
-                onBirthdaySelected = { birthday -> navController.navigate(NavRoutes.BirthdayDetails.createRoute(birthday.id)) },
+                onBirthdaySelected = { birthday ->
+                    birthdayViewModel.getBirthdays() // Refresh the data
+                    navController.navigate(NavRoutes.BirthdayDetails.createRoute(birthday.id))
+                },
                 onBirthdayDeleted = { birthday -> birthdayViewModel.deleteBirthday(birthday.id) },
                 onAddBirthdayClicked = { navController.navigate(NavRoutes.BirthdayAdd.route) },
                 signOut = {
@@ -86,10 +89,10 @@ fun MainScreen(themeViewModel: ThemeViewModel) {
             arguments = listOf(navArgument(name = "birthdayId") { type = NavType.IntType })
         ) { backStackEntry ->
             val birthdayId = backStackEntry.arguments?.getInt("birthdayId")
-            val birthday = birthdayViewModel.birthdays.value.find { it.id == birthdayId }
-            if (birthday != null) {
+            val updatedBirthday = birthdayViewModel.birthdays.value.find { it.id == birthdayId }
+            if (updatedBirthday != null) {
                 BirthdayDetailsScreen(
-                    birthday = birthday,
+                    birthday = updatedBirthday,
                     onUpdateClicked = { id, updatedBirthday -> birthdayViewModel.updateBirthday(id, updatedBirthday) },
                     onBackPressed = { navController.popBackStack() }
                 )

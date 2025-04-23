@@ -27,18 +27,27 @@ fun BirthdayAddScreen(
     var showError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
+
     fun validateInputs(): Boolean {
         return when {
-            name.isBlank() || date.isBlank() || month.isBlank() || year.isBlank() -> {
-                errorMessage = "All fields must be filled."
+            name.isBlank() -> {
+                errorMessage = "Name cannot be empty."
                 false
             }
-            date.toIntOrNull() == null || month.toIntOrNull() == null || year.toIntOrNull() == null -> {
-                errorMessage = "Date, Month, and Year must be valid numbers."
+            date.toIntOrNull() == null || date.toInt() !in 1..31 -> {
+                errorMessage = "Date must be a valid number between 1 and 31."
+                false
+            }
+            month.toIntOrNull() == null || month.toInt() !in 1..12 -> {
+                errorMessage = "Month must be a valid number between 1 and 12."
+                false
+            }
+            year.toIntOrNull() == null || year.toInt() < 1900 -> {
+                errorMessage = "Year must be a valid number greater than 1900."
                 false
             }
             else -> {
-                showError = false
+                errorMessage = ""
                 true
             }
         }
@@ -48,9 +57,9 @@ fun BirthdayAddScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center // Center the content vertically
+        verticalArrangement = Arrangement.Center
     ) {
-        if (showError) {
+        if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
@@ -88,8 +97,6 @@ fun BirthdayAddScreen(
                         age = 0
                     )
                     onAddBirthday(birthday)
-                } else {
-                    showError = true
                 }
             }) {
                 Text("Add Birthday")
