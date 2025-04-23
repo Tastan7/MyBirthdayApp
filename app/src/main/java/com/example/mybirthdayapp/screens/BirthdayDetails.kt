@@ -34,6 +34,7 @@ fun BirthdayDetailsScreen(
     var birthMonth by remember { mutableStateOf(birthday.birthMonth.toString()) }
     var birthDayOfMonth by remember { mutableStateOf(birthday.birthDayOfMonth.toString()) }
     var remarks by remember { mutableStateOf(birthday.remarks ?: "") }
+    var pictureUrl by remember { mutableStateOf(birthday.pictureUrl ?: "") }
 
     var showError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
@@ -79,6 +80,14 @@ fun BirthdayDetailsScreen(
                             contentDescription = "Back"
                         )
                     }
+                },
+                actions = {
+                    IconButton(onClick = { isEditing = !isEditing }) {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = "Edit Birthday"
+                        )
+                    }
                 }
             )
         }
@@ -92,7 +101,7 @@ fun BirthdayDetailsScreen(
         ) {
             // Display the image using AsyncImage
             AsyncImage(
-                model = birthday.pictureUrl ?: "",
+                model = pictureUrl,
                 contentDescription = "Birthday Picture",
                 modifier = Modifier
                     .size(150.dp)
@@ -106,33 +115,28 @@ fun BirthdayDetailsScreen(
                     modifier = Modifier.padding(8.dp)
                 )
             }
-            // lave et map der kan binde en label til en værdi
+
             if (isEditing) {
                 DetailEditableField(value = name, onValueChange = { name = it }, label = "Name")
-                DetailEditableField(value = birthYear, onValueChange = { birthYear = it }, label = "Birth Year", keyboardType = KeyboardType.Number)
-                DetailEditableField(value = birthMonth, onValueChange = { birthMonth = it }, label = "Birth Month", keyboardType = KeyboardType.Number)
-                DetailEditableField(value = birthDayOfMonth, onValueChange = { birthDayOfMonth = it }, label = "Birth Day", keyboardType = KeyboardType.Number)
+                DetailEditableField(value = birthDayOfMonth, onValueChange = { birthDayOfMonth = it }, label = "Date", keyboardType = KeyboardType.Number)
+                DetailEditableField(value = birthMonth, onValueChange = { birthMonth = it }, label = "Month", keyboardType = KeyboardType.Number)
+                DetailEditableField(value = birthYear, onValueChange = { birthYear = it }, label = "Year", keyboardType = KeyboardType.Number)
+                DetailEditableField(value = pictureUrl, onValueChange = { pictureUrl = it }, label = "Picture URL")
                 DetailEditableField(value = remarks, onValueChange = { remarks = it }, label = "Remarks")
 
                 Button(
                     onClick = {
                         if (validateInputs()) {
-                            try {
-                                val updatedBirthday = birthday.copy(
-                                    name = name,
-                                    birthYear = birthYear.toInt(),
-                                    birthMonth = birthMonth.toInt(),
-                                    birthDayOfMonth = birthDayOfMonth.toInt(),
-                                    remarks = remarks,
-                                    pictureUrl = birthday.pictureUrl ?: "" // Ensure pictureUrl is not null
-                                )
-                                onUpdateClicked(birthday.id, updatedBirthday)
-                                isEditing = false
-                            } catch (e: Exception) {
-                                showError = true
-                                errorMessage = "An error occurred: ${e.message}"
-                                Log.e("BirthdayDetailsScreen", "Update failed", e)
-                            }
+                            val updatedBirthday = birthday.copy(
+                                name = name,
+                                birthYear = birthYear.toInt(),
+                                birthMonth = birthMonth.toInt(),
+                                birthDayOfMonth = birthDayOfMonth.toInt(),
+                                remarks = remarks,
+                                pictureUrl = pictureUrl
+                            )
+                            onUpdateClicked(birthday.id, updatedBirthday)
+                            isEditing = false
                         } else {
                             showError = true
                         }
@@ -149,12 +153,14 @@ fun BirthdayDetailsScreen(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                // lave dette programatisk så det ikke bare er hardcoded
-                DetailRow(label = "Birth Year", value = birthYear)
+                // Updated order of details
+                DetailRow(label = "Age", value = birthday.age.toString())
+                HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
+                DetailRow(label = "Birth Day", value = birthDayOfMonth)
                 HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
                 DetailRow(label = "Birth Month", value = birthMonth)
                 HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
-                DetailRow(label = "Birth Day", value = birthDayOfMonth)
+                DetailRow(label = "Birth Year", value = birthYear)
                 HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
                 DetailRow(label = "Remarks", value = remarks)
             }
@@ -174,6 +180,7 @@ fun DetailEditableField(
         onValueChange = onValueChange,
         label = { Text(label) },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        singleLine = true, // Ensures the field stays single-line
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)

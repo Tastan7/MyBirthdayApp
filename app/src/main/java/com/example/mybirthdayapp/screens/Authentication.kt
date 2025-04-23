@@ -39,7 +39,7 @@ fun Authentication(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Authentication") }
+                title = { Text("Login and Register") }
             )
         }
     ) { innerPadding ->

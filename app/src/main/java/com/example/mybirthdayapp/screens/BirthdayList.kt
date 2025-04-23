@@ -122,7 +122,7 @@ fun BirthdayListScreen(
                     },
                     modifier = Modifier.padding(start = 8.dp)
                 ) {
-                    Text("Switch to $filterType")
+                    Text("Switch to ${if (filterType == "Name") "Age" else "Name"}")
                 }
             }
 

@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.mybirthdayapp.model.Birthday
 import android.util.Log
+import com.example.mybirthdayapp.utils.calculateAge
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,8 +37,10 @@ class BirthdaysRepository {
             override fun onResponse(call: Call<List<Birthday>>, response: Response<List<Birthday>>) {
                 isLoadingBirthdays.value = false
                 if (response.isSuccessful) {
-                    originalBirthdays = response.body() ?: emptyList()
-                    birthdays.value = originalBirthdays // Set the birthdays state to the original list
+                    originalBirthdays = response.body()?.map { birthday ->
+                        birthday.copy(age = calculateAge(birthday.birthYear, birthday.birthMonth, birthday.birthDayOfMonth))
+                    } ?: emptyList()
+                    birthdays.value = originalBirthdays // Set the birthdays state to the updated list
                     errorMessage.value = ""
                     Log.d("BirthdaysRepository", "Fetched birthdays: ${birthdays.value}")
                 } else {

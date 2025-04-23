@@ -47,7 +47,8 @@ fun BirthdayAddScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center // Center the content vertically
     ) {
         if (showError) {
             Text(
